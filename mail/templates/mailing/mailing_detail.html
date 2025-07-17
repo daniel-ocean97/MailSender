@@ -1,0 +1,312 @@
+{% block content %}
+<div class="container mailing-detail-container">
+    <header class="mailing-header">
+        <h1>Рассылка #{{ object.pk }}</h1>
+    </header>
+
+    <div class="mailing-info">
+        <div class="info-card">
+            <div class="info-label">Статус</div>
+            <div class="info-value status-{{ object.status }}">{{ object.get_status_display }}</div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-label">Клиентов</div>
+            <div class="info-value">{{ object.clients.count }}</div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-label">Время начала</div>
+            <div class="info-value">
+                <p>Время начала: {{ object.start_time }}</p>
+
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-label">Время окончания</div>
+            <div class="info-value">{{ object.end_time }}</div>
+        </div>
+    </div>
+
+    <!-- Кнопка запуска -->
+    <div class="action-section">
+        <a href="#" class="btn launch-btn">
+            Запустить рассылку сейчас
+        </a>
+    </div>
+
+    <!-- Информация о письме -->
+    <div class="letter-info">
+        <h2 class="section-title">Письмо рассылки</h2>
+        <div class="letter-card">
+            <h3 class="letter-theme">{{ object.message.theme }}</h3>
+            <div class="letter-text">{{ object.message.text }}</div>
+        </div>
+    </div>
+
+    <!-- История отправок -->
+    <div class="logs-section">
+        <h2 class="section-title">История отправок</h2>
+
+        {% if object.logs.all %}
+        <div class="logs-table-container">
+            <table class="logs-table">
+                <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th>Ответ</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for log in object.logs.all %}
+                <tr class="log-row log-{{ log.status }}">
+                    <td>{{ log.time|date:"d.m.Y H:i" }}</td>
+                    <td>{{ log.client.email }}</td>
+                    <td>{{ log.get_status_display }}</td>
+                    <td>{{ log.response|truncatechars:50 }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-logs">
+            <p>Отправок еще не было</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="back-link">
+        <a href="#" class="btn back-btn">
+            &larr; Назад к списку рассылок
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Общие стили */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .mailing-header {
+        text-align: center;
+        padding: 25px 0;
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .mailing-header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .section-title {
+        text-align: center;
+        color: #2c3e50;
+        margin: 40px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+        font-size: 1.8rem;
+    }
+
+    /* Стили для информационных карточек */
+    .mailing-info {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        width: 22%;
+        min-width: 200px;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .info-label {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .status-created { color: #3498db; }
+    .status-started { color: #2ecc71; }
+    .status-completed { color: #e74c3c; }
+
+    /* Кнопка запуска */
+    .action-section {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .launch-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        background: linear-gradient(to right, #2ecc71, #27ae60);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .launch-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(46, 204, 113, 0.4);
+        background: linear-gradient(to right, #27ae60, #2ecc71);
+    }
+
+    /* Стили для информации о письме */
+    .letter-info {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin: 30px 0;
+    }
+
+    .letter-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid #3498db;
+    }
+
+    .letter-theme {
+        color: #2c3e50;
+        margin-top: 0;
+        font-size: 1.5rem;
+    }
+
+    .letter-text {
+        color: #34495e;
+        line-height: 1.6;
+        font-size: 1.1rem;
+    }
+
+    /* Стили для истории отправок */
+    .logs-section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin: 30px 0;
+    }
+
+    .logs-table-container {
+        overflow-x: auto;
+    }
+
+    .logs-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .logs-table th {
+        background: #3498db;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .logs-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .logs-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .log-success { background-color: rgba(46, 204, 113, 0.05); }
+    .log-error { background-color: rgba(231, 76, 60, 0.05); }
+
+    .no-logs {
+        text-align: center;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    /* Кнопка "Назад" */
+    .back-link {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .back-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(to right, #95a5a6, #7f8c8d);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: linear-gradient(to right, #7f8c8d, #95a5a6);
+        transform: translateY(-2px);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .info-card {
+            width: 45%;
+        }
+
+        .mailing-header h1 {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .info-card {
+            width: 100%;
+        }
+
+        .launch-btn {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+</style>
+{% endblock %}

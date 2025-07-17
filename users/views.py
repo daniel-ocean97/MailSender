@@ -1,11 +1,15 @@
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin,
+                                        UserPassesTestMixin)
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from config.settings import EMAIL_HOST_USER
-from users.forms import CustomUserCreationForm
+from users.forms import CustomUserCreationForm, CustomChangeForm
+from models import User
 
 
 class CustomLoginView(LoginView):
@@ -15,13 +19,13 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     template_name = "logout.html"
-    next_page = reverse_lazy("catalog:home")
+    next_page = reverse_lazy("mail:home")
 
 
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "register.html"
-    success_url = reverse_lazy("catalog:home")
+    success_url = reverse_lazy("mail:home")
 
     def form_valid(self, form):
         user = form.save()
@@ -36,6 +40,11 @@ class RegisterView(CreateView):
         send_mail(
             subject, message, from_email=EMAIL_HOST_USER, recipient_list=recipient_list
         )
-from django.shortcuts import render
 
-# Create your views here.
+
+class UserChangeView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = CustomChangeForm
+    context_object_name = "user"
+    template_name = "user_form.html"
+    success_url = reverse_lazy("mail:home")
