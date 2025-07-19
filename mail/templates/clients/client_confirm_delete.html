@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-confirm">
+        <h1>Подтверждение удаления</h1>
+        <p>Вы уверены, что хотите удалить клиента:</p>
+        <div class="client-info">
+            <p><strong>Email:</strong> {{ object.email }}</p>
+            <p><strong>ФИО:</strong> {{ object.full_name }}</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn delete-btn">Да, удалить</button>
+                <a href="{% url 'mail:client_list' %}" class="btn cancel-btn">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .delete-confirm {
+        max-width: 600px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .client-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 25px 0;
+        text-align: left;
+    }
+    
+    .delete-form {
+        margin-top: 30px;
+    }
+    
+    .delete-btn {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+</style>
+{% endblock %}

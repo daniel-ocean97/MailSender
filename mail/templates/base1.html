@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Система рассылок{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mail/css/styles.css' %}">
+    <style>
+        /* Стили навигационной панели */
+        .navbar {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar-brand a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .navbar-user {
+            color: white;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .navbar .btn {
+            padding: 8px 20px;
+            font-size: 1rem;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .login-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white !important;
+        }
+
+        .register-btn {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white !important;
+        }
+
+        .logout-btn {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white !important;
+        }
+
+        /* Стили футера */
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        footer .container {
+            text-align: center;
+        }
+
+        /* Адаптивность навигации */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-menu {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .navbar .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Навигационная панель -->
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <a href="{% url 'mail:home' %}">Система рассылок</a>
+        </div>
+
+        <div class="navbar-menu">
+            {% if user.is_authenticated %}
+            <div class="navbar-user">
+                <span>Привет, {{ user.username }}!</span>
+            </div>
+            <div class="navbar-actions">
+                <a href="{% url 'mail:mailing_list' %}" class="btn mailings-btn">Рассылки</a>
+                <a href="{% url 'mail:client_list' %}" class="btn clients-btn">Клиенты</a>
+                <form action="{% url 'users:change' users.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn logout-btn">Редактировать профиль</button>
+                </form>
+                <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn logout-btn">Выйти</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="navbar-actions">
+                <a href="{% url 'users:login' %}" class="btn login-btn">Войти</a>
+                <a href="{% url 'users:register' %}" class="btn register-btn">Регистрация</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    <div class="container">
+        <p>Система управления рассылками &copy; {% now "Y" %}</p>
+    </div>
+</footer>
+</body>
+</html>

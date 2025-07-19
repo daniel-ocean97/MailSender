@@ -1,0 +1,115 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="form-header">
+        <h1>
+            {% if object %}
+                Редактирование письма: {{ object.theme }}
+            {% else %}
+                Создание нового письма
+            {% endif %}
+        </h1>
+    </div>
+
+    <form method="post" class="custom-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.theme.id_for_label }}">Тема письма:</label>
+            {{ form.theme }}
+            {% if form.theme.errors %}
+                <div class="error">{{ form.theme.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.text.id_for_label }}">Текст письма:</label>
+            {{ form.text }}
+            {% if form.text.errors %}
+                <div class="error">{{ form.text.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn letters-btn">
+                {% if object %}Сохранить{% else %}Создать{% endif %}
+            </button>
+            <a href="{% if object %}{% url 'mail:letter_list' %}{% else %}{% url 'mail:letter_list' %}{% endif %}" class="btn cancel-btn">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-header {
+        text-align: center;
+        margin: 30px 0;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #9b59b6;
+    }
+    
+    .custom-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: #9b59b6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.2);
+    }
+    
+    .form-group textarea {
+        min-height: 300px;
+        resize: vertical;
+        font-family: monospace;
+    }
+    
+    .error {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .cancel-btn {
+        background: #95a5a6;
+        color: white;
+    }
+</style>
+{% endblock %}

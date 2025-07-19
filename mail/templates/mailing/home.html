@@ -1,0 +1,54 @@
+{% extends "base1.html" %}
+
+{% block content %}
+    <header class="home-header">
+        <h1>Система управления рассылками</h1>
+    </header>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_mailings }}</div>
+            <div class="stat-label">Всего рассылок</div>
+            <a href="{% url 'mail:mailing_list' %}" class="btn mailings-btn">Перейти</a>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">{{ active_mailings }}</div>
+            <div class="stat-label">Активных рассылок</div>
+            <a href="{% url 'mail:mailing_list' %}?status=started" class="btn mailings-btn">Перейти</a>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">{{ unique_clients }}</div>
+            <div class="stat-label">Уникальных клиентов</div>
+            <a href="{% url 'mail:client_list' %}" class="btn clients-btn">Перейти</a>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h2 class="card-title">Клиенты</h2>
+            <p>Управление базой клиентов для рассылок</p>
+            <a href="{% url 'mail:client_list' %}" class="btn clients-btn">Управление клиентами</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 class="card-title">Письма</h2>
+            <p>Создание и редактирование шаблонов писем</p>
+            <a href="{% url 'mail:letter_list' %}" class="btn letters-btn">Управление письмами</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 class="card-title">Рассылки</h2>
+            <p>Настройка и запуск email рассылок</p>
+            <a href="{% url 'mail:mailing_list' %}" class="btn mailings-btn">Управление рассылками</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 class="card-title">Логи</h2>
+            <p>История отправки и результаты рассылок</p>
+            <a href="{% url 'mail:log_list' %}" class="btn logs-btn">Просмотр логов</a>
+        </div>
+    </div>
+
+{% endblock %}

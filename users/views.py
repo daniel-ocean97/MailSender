@@ -9,7 +9,7 @@ from django.views.generic import CreateView, UpdateView
 
 from config.settings import EMAIL_HOST_USER
 from users.forms import CustomUserCreationForm, CustomChangeForm
-from models import User
+from .models import User
 
 
 class CustomLoginView(LoginView):

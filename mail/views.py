@@ -2,7 +2,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from django.urls import reverse_lazy
 from .models import Client, Letter, Mailing, Logging
 from .forms import ClientForm, LetterForm, MailingForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .services import send_mailing
 
 # Client Views
 class ClientListView(ListView):
@@ -16,18 +18,22 @@ class ClientCreateView(CreateView):
     model = Client
     form_class = ClientForm
     template_name = 'clients/client_form.html'
-    success_url = reverse_lazy('client_list')
+    success_url = reverse_lazy('mail:client_list')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 class ClientUpdateView(UpdateView):
     model = Client
     form_class = ClientForm
     template_name = 'clients/client_form.html'
-    success_url = reverse_lazy('client_list')
+    success_url = reverse_lazy('mail:client_list')
 
 class ClientDeleteView(DeleteView):
     model = Client
     template_name = 'clients/client_confirm_delete.html'
-    success_url = reverse_lazy('client_list')
+    success_url = reverse_lazy('mail:client_list')
 
 # Letter Views
 class LetterListView(ListView):
@@ -41,7 +47,7 @@ class LetterCreateView(CreateView):
     model = Letter
     form_class = LetterForm
     template_name = 'letters/letter_form.html'
-    success_url = reverse_lazy('letter_list')
+    success_url = reverse_lazy('mail:letter_list')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -51,17 +57,17 @@ class LetterUpdateView(UpdateView):
     model = Letter
     form_class = ClientForm
     template_name = 'letters/client_form.html'
-    success_url = reverse_lazy('letter_list')
+    success_url = reverse_lazy('mail:letter_list')
 
 class LetterDeleteView(DeleteView):
     model = Letter
     template_name = 'letters/client_confirm_delete.html'
-    success_url = reverse_lazy('letter_list')
+    success_url = reverse_lazy('mail:letter_list')
 
 # Mailing Views
 class MailingListView(ListView):
     model = Mailing
-    template_name = 'mailings/mailing_list.html'
+    template_name = 'mailing/mailing_list.html'
 
     def get_queryset(self):
         return super().get_queryset().filter(owner=self.request.user)
@@ -70,7 +76,7 @@ class MailingCreateView(CreateView):
     model = Mailing
     form_class = MailingForm
     template_name = 'mailings/mailing_form.html'
-    success_url = reverse_lazy('mailing_list')
+    success_url = reverse_lazy('mail:mailing_list')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -84,12 +90,12 @@ class MailingUpdateView(UpdateView):
     model = Mailing
     form_class = ClientForm
     template_name = 'mailing/mailing_form.html'
-    success_url = reverse_lazy('letter_list')
+    success_url = reverse_lazy('mail:letter_list')
 
 class MailingDeleteView(DeleteView):
     model = Mailing
     template_name = 'mailing/mailing_confirm_delete.html'
-    success_url = reverse_lazy('letter_list')
+    success_url = reverse_lazy('mail:letter_list')
 
 # Logging Views (только чтение)
 class LoggingListView(ListView):
@@ -116,4 +122,21 @@ def home(request):
         'active_mailings': active_mailings,
         'unique_clients': unique_clients,
     }
-    return render(request, 'home.html', context)
+    return render(request, 'mailing/home.html', context)
+
+
+def start_mailing(request, pk):
+    mailing = get_object_or_404(Mailing, pk=pk)
+
+    # Проверяем права доступа
+    if not request.user.is_superuser and mailing.owner != request.user:
+        messages.error(request, "У вас нет прав для запуска этой рассылки")
+        return redirect('mail:mailing_list')
+
+    try:
+        send_mailing(mailing)
+        messages.success(request, "Рассылка успешно запущена!")
+    except Exception as e:
+        messages.error(request, f"Ошибка при запуске рассылки: {str(e)}")
+
+    return redirect('mail:mailing_detail', pk=pk)

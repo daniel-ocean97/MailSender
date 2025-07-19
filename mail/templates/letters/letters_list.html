@@ -1,0 +1,47 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <header>
+        <h1>Шаблоны писем</h1>
+    </header>
+
+    <div class="action-bar">
+        <a href="{% url 'mail:letter_create' %}" class="btn letters-btn">
+            + Создать шаблон
+        </a>
+    </div>
+
+    {% if object_list %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Тема</th>
+                    <th>Содержание</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for letter in object_list %}
+                <tr>
+                    <td>{{ letter.theme }}</td>
+                    <td>{{ letter.text|truncatechars:50 }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mail:letter_update' letter.pk %}" class="btn edit-btn">✏️</a>
+                        <a href="{% url 'mail:letter_delete' letter.pk %}" class="btn delete-btn">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет созданных шаблонов писем</p>
+        <a href="{% url 'mail:letter_create' %}" class="btn letters-btn">Создать первый шаблон</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

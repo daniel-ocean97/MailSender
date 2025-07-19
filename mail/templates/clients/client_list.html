@@ -1,0 +1,119 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <header>
+        <h1>Клиенты</h1>
+    </header>
+
+    <div class="action-bar">
+        <a href="{% url 'mail:client_create' %}" class="btn clients-btn">
+            + Добавить клиента
+        </a>
+    </div>
+
+    {% if object_list %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>ФИО</th>
+                    <th>Комментарий</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in object_list %}
+                <tr>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.full_name }}</td>
+                    <td>{{ client.comment|truncatechars:30 }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mail:client_edit' client.pk %}" class="btn edit-btn">✏️</a>
+                        <a href="{% url 'mail:client_delete' client.pk %}" class="btn delete-btn">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет добавленных клиентов</p>
+        <a href="{% url 'mail:client_create' %}" class="btn clients-btn">Добавить первого клиента</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .action-bar {
+        margin: 20px 0 30px;
+        text-align: right;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .data-table th {
+        background: #1abc9c;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .data-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .edit-btn {
+        background: #3498db;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .delete-btn {
+        background: #e74c3c;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .empty-state p {
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

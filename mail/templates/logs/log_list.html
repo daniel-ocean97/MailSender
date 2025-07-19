@@ -1,0 +1,80 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <header>
+        <h1>Логи отправок</h1>
+    </header>
+
+    {% if object_list %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Рассылка</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th>Ответ сервера</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in object_list %}
+                <tr class="log-{{ log.status }}">
+                    <td>{{ log.time|date:"d.m.Y H:i" }}</td>
+                    <td>#{{ log.mailing.pk }} ({{ log.mailing.message.theme|truncatechars:20 }})</td>
+                    <td>{{ log.client.email }}</td>
+                    <td>{{ log.get_status_display }}</td>
+                    <td>{{ log.response|truncatechars:50 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Пагинация -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="btn">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn">предыдущая</a>
+            {% endif %}
+            
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет данных о отправках</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .pagination {
+        margin-top: 30px;
+        text-align: center;
+    }
+    
+    .pagination .btn {
+        padding: 8px 16px;
+        margin: 0 5px;
+        background: #3498db;
+    }
+    
+    .pagination .current {
+        padding: 10px 15px;
+        background: #ecf0f1;
+        border-radius: 5px;
+        margin: 0 10px;
+    }
+</style>
+{% endblock %}

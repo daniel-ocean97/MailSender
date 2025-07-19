@@ -1,0 +1,97 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <header>
+        <h1>Рассылки</h1>
+    </header>
+
+    <div class="action-bar">
+        <a href="{% url 'mail:mailing_create' %}" class="btn mailings-btn">
+            + Создать рассылку
+        </a>
+    </div>
+
+    {% if object_list %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Статус</th>
+                    <th>Начало</th>
+                    <th>Окончание</th>
+                    <th>Клиентов</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mailing in object_list %}
+                <tr>
+                    <td>{{ mailing.pk }}</td>
+                    <td>
+                        <span class="status status-{{ mailing.status }}">
+                            {{ mailing.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ mailing.start_time|date:"d.m.Y H:i" }}</td>
+                    <td>{{ mailing.end_time|date:"d.m.Y H:i" }}</td>
+                    <td>{{ mailing.clients.count }}</td>
+                    <td class="actions">
+                        <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn view-btn">👁️</a>
+                        <a href="{% url 'mail:mailing_update' mailing.pk %}" class="btn edit-btn">✏️</a>
+                        <a href="{% url 'mail:mailing_delete' mailing.pk %}" class="btn delete-btn">🗑️</a>
+                        {% if mailing.status == 'created' %}
+                        <a href="{% url 'mail:send_mailing' mailing.pk %}" class="btn launch-btn">🚀</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Нет созданных рассылок</p>
+        <a href="{% url 'mail:mailing_create' %}" class="btn mailings-btn">Создать первую рассылку</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .status-created { 
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+    }
+    
+    .status-started { 
+        background: rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+    }
+    
+    .status-completed { 
+        background: rgba(231, 76, 60, 0.2);
+        color: #c0392b;
+    }
+    
+    .view-btn {
+        background: #9b59b6;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .launch-btn {
+        background: #2ecc71;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}

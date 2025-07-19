@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 from config.settings import AUTH_USER_MODEL
 
@@ -42,8 +43,8 @@ class Letter(models.Model):
         verbose_name_plural = "Письма"
 
 class Mailing(models.Model):
-    start_time = models.DateTimeField(verbose_name="Время начала", auto_now_add=True)
-    end_time = models.DateTimeField(verbose_name="Время окончания")
+    start_time = models.TimeField(verbose_name="Время начала", auto_now_add=True)
+    end_time = models.TimeField(verbose_name="Время окончания")
     STATUS_CHOICES = [
         ('created', 'Создана'),
         ('started', 'Запущена'),
@@ -66,6 +67,12 @@ class Mailing(models.Model):
         null=True,
         verbose_name="Создатель",
     )
+    last_sent = models.DateTimeField(
+        verbose_name="Последняя отправка",
+        blank=True,
+        null=True,
+        default=datetime.datetime.now()
+    )
 
     def __str__(self):
         return self.status
@@ -76,7 +83,7 @@ class Mailing(models.Model):
 
 
 class Logging(models.Model):
-    time = models.DateTimeField
+    time = models.TimeField(default=datetime.time(0, 0))
     status = models.CharField(choices=(("success", "Успешно"), ("error", "Ошибка"),))
     mailing = models.ForeignKey(Mailing, verbose_name="Рассылка", on_delete=models.SET_NULL, blank=True,
         null=True)
@@ -87,5 +94,14 @@ class Logging(models.Model):
         null=True,
         verbose_name="Создатель",
     )
+    response = models.TextField(
+        verbose_name="Ответ сервера",
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        verbose_name = "Лог отправки"
+        verbose_name_plural = "Логи отправки"
 
 

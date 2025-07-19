@@ -1,0 +1,68 @@
+{% extends "base1.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-confirm">
+        <h1>Подтверждение удаления</h1>
+        <p>Вы уверены, что хотите удалить рассылку?</p>
+        <div class="mailing-info">
+            <p><strong>ID:</strong> #{{ object.pk }}</p>
+            <p><strong>Статус:</strong> {{ object.get_status_display }}</p>
+            <p><strong>Сообщение:</strong> {{ object.message.theme }}</p>
+            <p><strong>Клиентов:</strong> {{ object.clients.count }}</p>
+        </div>
+        
+        <p class="warning">Это действие нельзя отменить! Будут также удалены все связанные логи.</p>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn delete-btn">Да, удалить</button>
+                <a href="{% url 'mail:mailing_detail' object.pk %}" class="btn cancel-btn">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .delete-confirm {
+        max-width: 600px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .mailing-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 25px 0;
+        text-align: left;
+    }
+    
+    .warning {
+        color: #e74c3c;
+        font-weight: 600;
+        margin: 20px 0;
+    }
+    
+    .delete-form {
+        margin-top: 30px;
+    }
+    
+    .delete-btn {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+</style>
+{% endblock %}
