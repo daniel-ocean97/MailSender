@@ -29,8 +29,10 @@
                     <td>{{ letter.theme }}</td>
                     <td>{{ letter.text|truncatechars:50 }}</td>
                     <td class="actions">
+                        {% if not perms.mail.can_view_all_list %}
                         <a href="{% url 'mail:letter_update' letter.pk %}" class="btn edit-btn">✏️</a>
                         <a href="{% url 'mail:letter_delete' letter.pk %}" class="btn delete-btn">🗑️</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

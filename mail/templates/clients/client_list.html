@@ -31,8 +31,10 @@
                     <td>{{ client.full_name }}</td>
                     <td>{{ client.comment|truncatechars:30 }}</td>
                     <td class="actions">
+                        {% if not perms.mail.can_view_all_list %}
                         <a href="{% url 'mail:client_edit' client.pk %}" class="btn edit-btn">✏️</a>
                         <a href="{% url 'mail:client_delete' client.pk %}" class="btn delete-btn">🗑️</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

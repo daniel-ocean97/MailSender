@@ -126,12 +126,15 @@
         <div class="navbar-menu">
             {% if user.is_authenticated %}
             <div class="navbar-user">
-                <span>Привет, {{ user.username }}!</span>
+                <span>Привет, {{ user.email }}!</span>
             </div>
             <div class="navbar-actions">
+                {% if perms.mail.can_view_all_list %}
+                <a href="{% url 'users:user_list' %}" class="btn mailings-btn">Список пользователей</a>
+                {% endif %}
                 <a href="{% url 'mail:mailing_list' %}" class="btn mailings-btn">Рассылки</a>
                 <a href="{% url 'mail:client_list' %}" class="btn clients-btn">Клиенты</a>
-                <form action="{% url 'users:change' users.pk %}" method="post" style="display: inline;">
+                <form action="{% url 'users:change' user.pk %}" method="post" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn logout-btn">Редактировать профиль</button>
                 </form>

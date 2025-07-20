@@ -39,11 +39,13 @@
                     <td>{{ mailing.end_time|date:"d.m.Y H:i" }}</td>
                     <td>{{ mailing.clients.count }}</td>
                     <td class="actions">
+                        {% if not perms.mail.can_view_all_list %}
                         <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn view-btn">👁️</a>
                         <a href="{% url 'mail:mailing_update' mailing.pk %}" class="btn edit-btn">✏️</a>
                         <a href="{% url 'mail:mailing_delete' mailing.pk %}" class="btn delete-btn">🗑️</a>
                         {% if mailing.status == 'created' %}
                         <a href="{% url 'mail:send_mailing' mailing.pk %}" class="btn launch-btn">🚀</a>
+                        {% endif %}
                         {% endif %}
                     </td>
                 </tr>
