@@ -1,9 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    UserPassesTestMixin,
-)
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
@@ -67,7 +64,7 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 def toggle_user_active(request, pk):
-    if not request.user.has_perm("mail.can_view_all_list"):
+    if not request.user.has_perm("users.can_block_user"):
         messages.error(request, "У вас нет прав для выполнения этого действия")
         return redirect("home")
 

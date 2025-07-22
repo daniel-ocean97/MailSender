@@ -18,9 +18,7 @@ class LetterForm(forms.ModelForm):
 class MailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
-        fields = ["end_time", "status", "message", "clients"]
+        fields = ["status", "message", "clients"]
         widgets = {
-            "start_time": forms.TimeInput(attrs={"type": "time"}),
-            "end_time": forms.TimeInput(attrs={"type": "time"}),
             "clients": forms.CheckboxSelectMultiple,
         }

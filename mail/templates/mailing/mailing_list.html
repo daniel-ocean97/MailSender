@@ -46,6 +46,9 @@
                         {% if mailing.status == 'created' %}
                         <a href="{% url 'mail:send_mailing' mailing.pk %}" class="btn launch-btn">🚀</a>
                         {% endif %}
+                        {% else %}
+                        <a href="{% url 'mail:mailing_detail' mailing.pk %}" class="btn view-btn">👁️</a>
+                        <a href="{% url 'mail:end_mailing' mailing.pk %}" class="btn mailings-btn">Завершить рассылку</a>
                         {% endif %}
                     </td>
                 </tr>

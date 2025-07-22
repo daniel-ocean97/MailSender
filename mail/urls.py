@@ -54,4 +54,5 @@ urlpatterns = [
     # Logging URLs
     path("logs/", views.LoggingListView.as_view(), name="log_list"),
     path("logs/<int:pk>/", views.LoggingDetailView.as_view(), name="log_detail"),
+    path("mailings/<int:pk>/end/", views.end_mailing, name="end_mailing"),
 ]

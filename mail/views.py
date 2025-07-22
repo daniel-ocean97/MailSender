@@ -1,13 +1,9 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
 from .forms import ClientForm, LetterForm, MailingForm
 from .models import Client, Letter, Logging, Mailing
@@ -15,7 +11,7 @@ from .services import send_mailing
 
 
 # Client Views
-class ClientListView(ListView):
+class ClientListView(LoginRequiredMixin, ListView):
     model = Client
     template_name = "clients/client_list.html"
 
@@ -56,7 +52,7 @@ class ClientDeleteView(DeleteView):
 
 
 # Letter Views
-class LetterListView(ListView):
+class LetterListView(LoginRequiredMixin, ListView):
     model = Letter
     template_name = "letters/Letters_list.html"
 
@@ -85,7 +81,7 @@ class LetterCreateView(CreateView):
 
 class LetterUpdateView(UpdateView):
     model = Letter
-    form_class = ClientForm
+    form_class = LetterForm
     template_name = "letters/letter_form.html"
     success_url = reverse_lazy("mail:letter_list")
 
@@ -97,7 +93,7 @@ class LetterDeleteView(DeleteView):
 
 
 # Mailing Views
-class MailingListView(ListView):
+class MailingListView(LoginRequiredMixin, ListView):
     model = Mailing
     template_name = "mailing/mailing_list.html"
 
@@ -116,7 +112,7 @@ class MailingListView(ListView):
 class MailingCreateView(CreateView):
     model = Mailing
     form_class = MailingForm
-    template_name = "mailings/mailing_form.html"
+    template_name = "mailing/mailing_form.html"
     success_url = reverse_lazy("mail:mailing_list")
 
     def form_valid(self, form):
@@ -131,9 +127,9 @@ class MailingDetailView(DetailView):
 
 class MailingUpdateView(UpdateView):
     model = Mailing
-    form_class = ClientForm
+    form_class = MailingForm
     template_name = "mailing/mailing_form.html"
-    success_url = reverse_lazy("mail:letter_list")
+    success_url = reverse_lazy("mail:mailing_list")
 
 
 class MailingDeleteView(DeleteView):
@@ -184,5 +180,13 @@ def start_mailing(request, pk):
         messages.success(request, "Рассылка успешно запущена!")
     except Exception as e:
         messages.error(request, f"Ошибка при запуске рассылки: {str(e)}")
+
+    return redirect("mail:mailing_detail", pk=pk)
+
+
+def end_mailing(request, pk):
+    mailing = get_object_or_404(Mailing, pk=pk)
+    mailing.status = "Завершена"
+    mailing.save()
 
     return redirect("mail:mailing_detail", pk=pk)

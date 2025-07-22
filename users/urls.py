@@ -2,14 +2,8 @@ from django.urls import path
 
 from users.apps import UsersConfig
 
-from .views import (
-    CustomLoginView,
-    CustomLogoutView,
-    RegisterView,
-    UserChangeView,
-    UserListView,
-    toggle_user_active,
-)
+from .views import (CustomLoginView, CustomLogoutView, RegisterView,
+                    UserChangeView, UserListView, toggle_user_active)
 
 app_name = UsersConfig.name
 

@@ -22,9 +22,9 @@
             <div class="info-label">Время начала</div>
             <div class="info-value">
                 {% if object.start_time %}
-                    {{ object.start_time }}
+                {{ object.start_time }}
                 {% else %}
-                    Не указано
+                Не указано
                 {% endif %}
             </div>
         </div>
@@ -33,9 +33,9 @@
             <div class="info-label">Время окончания</div>
             <div class="info-value">
                 {% if object.end_time %}
-                    {{ object.end_time }}
+                {{ object.end_time }}
                 {% else %}
-                    Не указано
+                Не указано
                 {% endif %}
             </div>
         </div>
@@ -57,39 +57,6 @@
         </div>
     </div>
 
-    <!-- История отправок -->
-    <div class="logs-section">
-        <h2 class="section-title">История отправок</h2>
-
-        {% if object.logs.all %}
-        <div class="logs-table-container">
-            <table class="logs-table">
-                <thead>
-                    <tr>
-                        <th>Время</th>
-                        <th>Клиент</th>
-                        <th>Статус</th>
-                        <th>Ответ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for log in object.logs.all %}
-                    <tr class="log-row log-{{ log.status }}">
-                        <td>{{ log.time|date:"d.m.Y H:i" }}</td>
-                        <td>{{ log.client.email }}</td>
-                        <td>{{ log.get_status_display }}</td>
-                        <td>{{ log.response|truncatechars:50 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="no-logs">
-            <p>Отправок еще не было</p>
-        </div>
-        {% endif %}
-    </div>
 
     <div class="back-link">
         <a href="{% url 'mail:mailing_list' %}" class="btn back-btn">

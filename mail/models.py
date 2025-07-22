@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.utils import timezone
 
 from config.settings import AUTH_USER_MODEL
 
@@ -54,7 +55,6 @@ class Letter(models.Model):
 
 class Mailing(models.Model):
     start_time = models.TimeField(verbose_name="Время начала", auto_now_add=True)
-    end_time = models.TimeField(verbose_name="Время окончания")
     STATUS_CHOICES = [
         ("created", "Создана"),
         ("started", "Запущена"),
@@ -80,7 +80,7 @@ class Mailing(models.Model):
         verbose_name="Последняя отправка",
         blank=True,
         null=True,
-        default=datetime.datetime.now(),
+        default=timezone.now(),
     )
 
     def __str__(self):
@@ -96,7 +96,7 @@ class Mailing(models.Model):
 
 
 class Logging(models.Model):
-    time = models.TimeField(default=datetime.time(0, 0))
+    time = models.TimeField(auto_now=True)
     status = models.CharField(
         choices=(
             ("success", "Успешно"),
@@ -118,6 +118,14 @@ class Logging(models.Model):
         verbose_name="Создатель",
     )
     response = models.TextField(verbose_name="Ответ сервера", blank=True, null=True)
+    client = models.ForeignKey(
+        Client,
+        on_delete=models.CASCADE,
+        verbose_name="Получатель",
+        blank=True,
+        null=True,
+        related_name="sended_mailings",
+    )
 
     class Meta:
         verbose_name = "Лог отправки"
