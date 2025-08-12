@@ -66,7 +66,7 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
 # Letter Views
 class LetterListView(LoginRequiredMixin, ListView):
     model = Letter
-    template_name = "letters/Letters_list.html"
+    template_name = "letters/letters_list.html"
 
     def get_queryset(self):
         # Получаем стандартный queryset
@@ -253,7 +253,7 @@ def start_mailing(request, pk):
 
 def end_mailing(request, pk):
     mailing = get_object_or_404(Mailing, pk=pk)
-    mailing.status = "Завершена"
+    mailing.status = "completed"
     mailing.save()
 
     return redirect("mail:mailing_detail", pk=pk)

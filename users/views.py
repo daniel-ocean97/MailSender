@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -59,8 +60,14 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "user_list.html"
     context_object_name = "object_list"
 
+    def get_queryset(self):
+        managers = Group.objects.get(name='Managers')
+        qs = super().get_queryset().exclude(is_superuser=True).exclude(groups__in=[managers])
+        return qs
+
+
     def test_func(self):
-        return self.request.user.has_perm("mail.can_view_all_list")
+        return self.request.user.has_perm("users.can_block_users")
 
 
 def toggle_user_active(request, pk):
