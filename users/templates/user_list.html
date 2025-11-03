@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <header>
+        <h1>Управление пользователями</h1>
+    </header>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in object_list %}
+                <tr class="{% if not user.is_active %}inactive-user{% endif %}">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-active">Активен</span>
+                        {% else %}
+                            <span class="status-blocked">Заблокирован</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <form action="{% url 'users:toggle_active' user.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn toggle-btn">
+                                {% if user.is_active %}Заблокировать{% else %}Активировать{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">Пользователи не найдены</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .table-container {
+        margin: 30px 0;
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .data-table th {
+        background: #2c3e50;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .data-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .inactive-user {
+        background-color: rgba(231, 76, 60, 0.05);
+    }
+    
+    .status-active {
+        color: #27ae60;
+        font-weight: 600;
+    }
+    
+    .status-blocked {
+        color: #e74c3c;
+        font-weight: 600;
+    }
+    
+    .actions {
+        min-width: 160px;
+    }
+    
+    .toggle-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        background: #f39c12;
+    }
+    
+    .toggle-btn:hover {
+        background: #d35400;
+    }
+    
+    .empty {
+        text-align: center;
+        padding: 20px;
+        color: #7f8c8d;
+    }
+    
+    .actions form {
+        display: inline;
+    }
+</style>
+{% endblock %}

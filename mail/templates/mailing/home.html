@@ -29,25 +29,33 @@
         <div class="dashboard-card">
             <h2 class="card-title">Клиенты</h2>
             <p>Управление базой клиентов для рассылок</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'mail:client_list' %}" class="btn clients-btn">Управление клиентами</a>
+            {% endif %}
         </div>
 
         <div class="dashboard-card">
             <h2 class="card-title">Письма</h2>
             <p>Создание и редактирование шаблонов писем</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'mail:letter_list' %}" class="btn letters-btn">Управление письмами</a>
+            {% endif %}
         </div>
 
         <div class="dashboard-card">
             <h2 class="card-title">Рассылки</h2>
             <p>Настройка и запуск email рассылок</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'mail:mailing_list' %}" class="btn mailings-btn">Управление рассылками</a>
+            {% endif %}
         </div>
 
         <div class="dashboard-card">
             <h2 class="card-title">Логи</h2>
             <p>История отправки и результаты рассылок</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'mail:log_list' %}" class="btn logs-btn">Просмотр логов</a>
+            {% endif %}
         </div>
     </div>
 
