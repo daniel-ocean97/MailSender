@@ -1,4 +1,5 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
+                                       UserCreationForm)
 
 from users.models import User
 
@@ -6,14 +7,8 @@ from users.models import User
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = [
-            "email",
-        ]
+        fields = ["email", "phone_number", "country", "avatar"]
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    pass
-
-
-class CustomChangeForm(UserChangeForm):
     pass
